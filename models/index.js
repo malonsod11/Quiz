@@ -30,8 +30,12 @@ sequelize
 .then(function(){
 return Quiz.count()
 .then(function(c){
-	if (c===0){ //la tabla se inicializa si está vacía
-		return Quiz.create({ question: 'Capital de Italia', answer: 'Roma'}).then(function(){
+	if (c === 0){ //la tabla se inicializa si está vacía
+		return Quiz
+			.bulkCreate([ question: 'Capital de Italia', answer: 'Roma'}, {question: 'Capital de Portugal', answer: 'Lisboa'}
+						])
+			
+			.then(function() {
 			console.log('Base de datos inicializada con datos');
 		});
 
@@ -39,7 +43,8 @@ return Quiz.count()
 });
 
 
-}).catch(function(error){
+})
+.catch(function(error){
 	console.log("Error Sincronizando las tablas de la BBDD", error);
 	process.exit(1);
 

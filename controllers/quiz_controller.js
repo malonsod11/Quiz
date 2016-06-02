@@ -1,26 +1,39 @@
 var models = require('../models');
 
-// GET /QUESTION
-exports.question=function(req, res,next)  {
+// GET /quizzes
+exports.index=function(req, res,next)  {
 	models
-	.quizzes.findOne() //Busca la primera pregunta
+	.Quiz
+	.findAll()
+	.then(function(quizzes){
+res.render('quizzes/index.ejs', { quizzes: quizzes});
+})
+.catch(function(error) { next(error);});
+
+};
+
+// GET /quizzes/:id
+exports.show=function(req, res,next)  {
+	models
+	.Quiz
+	.findById(req.params.quizId)
 	.then(function(quiz){
 		if (quiz){
 	var answer = req.query.answer || '';
-res.render('quizzes/question',{question: 'Capital de Italia', answer: answer});
+res.render('quizzes/show',{question: 'Capital de Italia', answer: answer});
 }
 else{
-	throw new Error('No hay preguntas en la BBDD.');
+	throw new Error('No existe ese quiz en la BBDD.');
 }
 }(.catch(function(error) { next(error);});
 
 };
 
-// GET /check
-exports.check=function(req,res,next){
+// GET /quizzes/:id/check
+exports.check=function(req,res){
 	models
 	.Quiz
-	.findOne() //Busca la primera pregunta
+	.findById(req.params.quizId) //Busca la primera pregunta
 	.then(function(quiz){
 		if(quiz){
 	var answer = req.query.answer || "";
@@ -28,7 +41,7 @@ exports.check=function(req,res,next){
 	res.render('quizzes/result', {result: result,answer: answer});
 	}
 	else{
-		throw new Error('No hay preguntas en la BBDD.');
+		throw new Error('No existe ese quiz en la BBDD.');
 	}
 }).catch(function(error) {next(error); });
 };
